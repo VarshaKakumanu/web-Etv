@@ -11,13 +11,13 @@ interface AppConfig {
 }
 
 export const appConfig: AppConfig = {
-    name: "Sample App",
+    name: "Etv Bharat",
     github: {
         title: "React Shadcn Starter",
         url: "https://github.com/hayyi2/react-shadcn-starter",
     },
     author: {
-        name: "hayyi",
-        url: "https://github.com/hayyi2/",
+        name: "Varsha Kakaumanu",
+        url: "https://github.com/VarshaKakumanu/web-Etv",
     }
 }

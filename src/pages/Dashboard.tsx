@@ -1,18 +1,77 @@
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import img from "/public/img.png";
+import { useNavigate } from "react-router-dom";
+
+const articles = [
+  {
+    id: "item-1",
+    title: "Article 1",
+    description: "Sure, here is some dummy text f....",
+    content:
+      "Sure, here is some dummy text for a paragraph: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
+  },
+  {
+    id: "item-2",
+    title: "Article 2",
+    description: "Here is some more dummy text....",
+    content:
+      "Another paragraph of dummy text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
+  },
+  {
+    id: "item-3",
+    title: "Article 3",
+    description: "Here is some more dummy text....",
+    content:
+      "Another paragraph of dummy text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
+  },
+  {
+    id: "item-4",
+    title: "Article 4",
+    description: "Here is some more dummy text....",
+    content:
+      "Another paragraph of dummy text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
+  },
+];
 
 export default function Dashboard() {
-    return (
-        <>
-            <PageHeader>
-                <PageHeaderHeading>Dashboard</PageHeaderHeading>
-            </PageHeader>
-            <Card>
-                <CardHeader>
-                    <CardTitle>React Shadcn Starter</CardTitle>
-                    <CardDescription>React + Vite + TypeScript template for building apps with shadcn/ui.</CardDescription>
-                </CardHeader>
-            </Card>
-        </>
-    )
+  const navigate = useNavigate();
+
+  const handleDescriptionClick = (id:any) => {
+   navigate(`/articles/${id}`);
+  };
+
+  return (
+    <>
+      <PageHeader>
+        <PageHeaderHeading>Articles</PageHeaderHeading>
+      </PageHeader>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+        {articles.map((article) => (
+          <Card key={article.id} onClick={() => handleDescriptionClick(article.id)}>
+            <CardHeader>
+              <CardTitle>{article.title}</CardTitle>
+              <img
+                src={img}
+                alt="Image"
+                className="block dark:hidden w-96 rounded-lg"
+              />
+              <CardDescription
+                 
+                className="cursor-pointer"
+              >
+                {article.description}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        ))}
+      </div>
+    </>
+  );
 }
