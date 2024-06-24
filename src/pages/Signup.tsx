@@ -71,7 +71,7 @@ const SignUp = () => {
         <h2 className="text-3xl text-center font-semibold">Sign Up</h2>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
             <FormField
               control={form.control}
               name="username"
