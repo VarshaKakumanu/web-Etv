@@ -18,19 +18,18 @@ import { DividerHorizontalIcon } from "@radix-ui/react-icons";
 
 // Define the schema for form validation
 const formSchema = z.object({
-  username: z.string().min(2, "Username must be at least 2 characters").max(50, "Username must be at most 50 characters"),
-  password: z.string().min(6, "Password must be at least 6 characters"), // Add password validation
+  email: z.string().email("Invalid email address"),
 });
 
-const Login = () => {
+const ForgotPassword = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      password: "", // Default value for password
+      email: "",
     },
   });
-const navigate = useNavigate()
+  const navigate = useNavigate();
+  
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
 
@@ -44,11 +43,12 @@ const navigate = useNavigate()
     })
       .then(response => response.json())
       .then(json => {
-        console.log("Success:", json);
-        navigate("/")
+        alert("Success:");
+        navigate("/login");
       })
       .catch(error => {
         console.error("Error:", error);
+        alert("error")
       });
   };
 
@@ -56,39 +56,25 @@ const navigate = useNavigate()
     <div className="bg-background text-foreground flex-grow flex items-center justify-evenly">
       <div className="space-y-4 p-4">
         <h2 className="text-8xl mb-4">Etv Bharat</h2>
-        <h1 className="text-xl font-semibold w-96 px-2">Login to access and enjoy our exclusive articles, tailored to your interests.</h1>
-        {/* <NavLink to="/" className={buttonVariants()}>Back to Home</NavLink> */}
+        <h1 className="text-xl font-semibold w-96 px-2">Reset Your password and access the Login</h1>
       </div>
-      <div className="space-y-4 p-4 w-80 divide-y divide-slate-300">
-        <h2 className="text-3xl text-center font-semibold ">Login</h2>
+      <div className="space-y-4 p-4 w-80 divide-y divide-slate-300 ">
+        <h2 className="text-3xl text-center font-semibold ">Forgot Password</h2>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
             <FormField
               control={form.control}
-              name="username"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="******" {...field} />
+                    <Input type="email" placeholder="example@example.com" {...field} />
                   </FormControl>
                   <FormDescription className="flex gap-2">
-                  <Link to='/forgotPassword'> Forgot Password?</Link>or
-                  <Link to='/signUp'>Sign Up</Link>
+                    <Link to="/login">Already have a Login?</Link> or
+                    <Link to='/signUp'>Sign Up</Link>
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -102,4 +88,4 @@ const navigate = useNavigate()
   );
 };
 
-export default Login;
+export default ForgotPassword;
