@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { DividerHorizontalIcon } from "@radix-ui/react-icons";
+import { useDispatch } from "react-redux";
+import loginReducer, { loggedIn } from "@/Redux/reducers/login";
 
 // Define the schema for form validation
 const formSchema = z.object({
@@ -31,6 +33,8 @@ const Login = () => {
     },
   });
 const navigate = useNavigate()
+const dispatch = useDispatch()
+const [userLoggedIn,setUserLoggedIn] = useState(false)
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log(data);
 
@@ -45,10 +49,13 @@ const navigate = useNavigate()
       .then(response => response.json())
       .then(json => {
         console.log("Success:", json);
+        setUserLoggedIn(!userLoggedIn)
+        dispatch(loggedIn(true))
         navigate("/")
       })
       .catch(error => {
         console.error("Error:", error);
+        dispatch(loggedIn(false))
       });
   };
 

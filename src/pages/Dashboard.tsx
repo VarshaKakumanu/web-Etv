@@ -8,6 +8,9 @@ import {
 
 import img from "/public/img.png";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useDispatch } from "react-redux";
+// import { loggedIn } from "@/Redux/reducers/login";
 
 const articles = [
   {
@@ -42,16 +45,24 @@ const articles = [
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleDescriptionClick = (id:any) => {
    navigate(`/articles/${id}`);
   };
+
+  const product = {
+    name: 'varsha',
+    laogginStatus : "true",
+    nummber: 173,
+  }
 
   return (
     <>
       <PageHeader>
         <PageHeaderHeading>Articles</PageHeaderHeading>
       </PageHeader>
+      {/* <Button variant="secondary" onClick={()=>{dispatch(loggedIn(product))}}>add to reducer</Button> */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
         {articles.map((article) => (
           <Card key={article.id} onClick={() => handleDescriptionClick(article.id)}>
