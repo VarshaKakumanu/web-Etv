@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import { DividerHorizontalIcon } from "@radix-ui/react-icons";
+import axios from 'axios';
 
 // Define the schema for form validation
 const formSchema = z.object({
@@ -38,26 +38,37 @@ const SignUp = () => {
   });
 
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setLoading(true);
+    setError(null);
 
-    // Dummy API call
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(json => {
-        console.log("Success:", json);
-        navigate("/");
-      })
-      .catch(error => {
-        console.error("Error:", error);
-      });
+    try {
+      const response = await axios.post(
+        "https://kb.etvbharat.com/keycloak/wp-json/users/v1/createUser",
+        {
+          username: data.username,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          password: data.password,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      console.log("Success:", response.data);
+      navigate("/login");
+    } catch (error) {
+      setError((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,7 +76,6 @@ const SignUp = () => {
       <div className="space-y-4 p-4">
         <h2 className="text-8xl mb-4">Etv Bharat</h2>
         <h1 className="text-xl font-semibold w-96 px-2">Sign Up to Etv Bharat and login to access our exclusive articles, tailored to your interests.</h1>
-        {/* <NavLink to="/" className={buttonVariants()}>Back to Home</NavLink> */}
       </div>
       <div className="space-y-4 p-4 w-80 divide-y divide-slate-300">
         <h2 className="text-3xl text-center font-semibold">Sign Up</h2>
@@ -140,7 +150,10 @@ const SignUp = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Submitting...' : 'Submit'}
+            </Button>
+            {error && <div style={{ color: 'red' }}>{error}</div>}
           </form>
         </Form>
       </div>
