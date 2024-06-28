@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { Loader2 } from "lucide-react";
 
 // Define the schema for form validation
 const formSchema = z.object({
@@ -50,9 +51,9 @@ const SignUp = () => {
         "https://kb.etvbharat.com/keycloak/wp-json/users/v1/createUser",
         {
           username: data.username,
-          firstName: data.firstName,
+          display_name: data.firstName,
           lastName: data.lastName,
-          email: data.email,
+          user_email: data.email,
           password: data.password,
         },
         {
@@ -150,9 +151,17 @@ const SignUp = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Submitting...' : 'Submit'}
-            </Button>
+           {loading ? (
+              <Button className="w-full" disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <>
+                {" "}
+                <Button type="submit" className="w-full">Submit</Button>
+              </>
+            )}
             {error && <div style={{ color: 'red' }}>{error}</div>}
           </form>
         </Form>

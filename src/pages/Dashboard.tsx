@@ -1,3 +1,5 @@
+import DOMPurify from 'dompurify';
+import { useEffect, useState } from "react";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import {
   Card,
@@ -10,62 +12,63 @@ import img from "/public/img.png";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
+import axios from "axios";
+import { Loader2 } from 'lucide-react';
 // import { loggedIn } from "@/Redux/reducers/login";
 
-const articles = [
-  {
-    id: "item-1",
-    title: "Article 1",
-    description: "Sure, here is some dummy text f....",
-    content:
-      "Sure, here is some dummy text for a paragraph: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
-  },
-  {
-    id: "item-2",
-    title: "Article 2",
-    description: "Here is some more dummy text....",
-    content:
-      "Another paragraph of dummy text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
-  },
-  {
-    id: "item-3",
-    title: "Article 3",
-    description: "Here is some more dummy text....",
-    content:
-      "Another paragraph of dummy text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
-  },
-  {
-    id: "item-4",
-    title: "Article 4",
-    description: "Here is some more dummy text....",
-    content:
-      "Another paragraph of dummy text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
-  },
-];
+// Define the data type for articles
+interface Article {
+  id: number;
+  title: string;
+  description: string;
+  content: string;
+}
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [articles, setArticles] = useState<Article[]>([]);
 
-  const handleDescriptionClick = (id:any) => {
-   navigate(`/articles/${id}`);
+  useEffect(() => {
+    axios.get("https://kb.etvbharat.com/keycloak/wp-json/wp/v2/posts?status=publish")
+      .then((response) => {
+        const formattedData = response.data.map((item: any) => ({
+          id: item.id,
+          title: item.title.rendered,
+          description:  DOMPurify.sanitize(item.content.rendered),
+          content: DOMPurify.sanitize(item.content.rendered),
+        }));
+        setArticles(formattedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
+  if (articles.length === 0) {
+    return <div className='flex justify-center items-center h-screen text-3xl font-sans font-bold gap-3'>Loading... <Loader2 className=" animate-spin" /></div>;
+  }
+
+  const handleDescriptionClick = (id: number) => {
+    navigate(`/articles/${id}`);
   };
 
   const product = {
     name: 'varsha',
-    laogginStatus : "true",
+    laogginStatus: "true",
     nummber: 173,
-  }
+  };
 
+  console.log(articles, "articles");
   return (
     <>
       <PageHeader>
         <PageHeaderHeading>Articles</PageHeaderHeading>
       </PageHeader>
       {/* <Button variant="secondary" onClick={()=>{dispatch(loggedIn(product))}}>add to reducer</Button> */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
         {articles.map((article) => (
-          <Card key={article.id} onClick={() => handleDescriptionClick(article.id)}>
+          <Card key={article.id} onClick={() => handleDescriptionClick(article.id)} className='hover:shadow-xl hover:cursor-pointer hover:animate-in hover:-translate-y-1'>
             <CardHeader>
               <CardTitle>{article.title}</CardTitle>
               <img
@@ -74,11 +77,9 @@ export default function Dashboard() {
                 className="block dark:hidden w-96 rounded-lg"
               />
               <CardDescription
-                 
-                className="cursor-pointer"
-              >
-                {article.description}
-              </CardDescription>
+                className="cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap"
+                dangerouslySetInnerHTML={{ __html: article.description }}
+              />
             </CardHeader>
           </Card>
         ))}

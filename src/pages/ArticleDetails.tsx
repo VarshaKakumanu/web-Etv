@@ -1,53 +1,84 @@
-// pages/ArticleDetail.js
+import DOMPurify from "dompurify";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Card } from "@/components/ui/card";
 import img from "/public/img.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
-const articles = [
-  {
-    id: "item-1",
-    title: "Article 1",
-    description: "Sure, here is some dummy text f....",
-    content:
-      "Sure, here is some dummy text for a paragraph: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
-  },
-  {
-    id: "item-2",
-    title: "Article 2",
-    description: "Here is some more dummy text....",
-    content:
-      "Another paragraph of dummy text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur, justo a suscipit aliquet, nisl libero cursus erat, ut cursus enim purus ut turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce auctor eros sed libero auctor, at vehicula magna scelerisque. Quisque nec dapibus erat. Aenean ut felis sit amet justo accumsan congue. Nulla facilisi. Sed id leo ac lectus tempor faucibus. Curabitur vestibulum lorem nec eros tincidunt, sed consequat orci dictum. Suspendisse potenti. Praesent eget tincidunt nisi, nec pharetra ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer aliquam consectetur felis, in cursus tortor bibendum sit amet. Mauris non facilisis sapien. Duis semper, libero eget bibendum scelerisque, mauris nulla tincidunt eros, sit amet sollicitudin nisi odio non est. Curabitur tempor diam vitae nulla egestas, sed fermentum nisi tincidunt.",
-  },
-];
+// Define the data types
+interface Article {
+  id: number;
+  title: string;
+  description: string;
+  content: string;
+}
 
 export default function ArticleDetail() {
   const { id } = useParams();
-  const article = articles.find((article) => article.id === id);
-
-  if (!article) {
-    return <div>Article not found</div>;
-  }
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [article, setArticle] = useState<Article | null>(null);
   const navigate = useNavigate();
 
-  const handleDescriptionClick = (id: any) => {
+  console.log(articles, "fetching articles q");
+  useEffect(() => {
+    axios
+      .get(
+        "https://kb.etvbharat.com/keycloak/wp-json/wp/v2/posts?status=publish"
+      )
+      .then((response) => {
+        const fetchedArticles = response.data.map((item: any) => ({
+          id: item.id,
+          title: item.title.rendered,
+          description: DOMPurify.sanitize(item.content.rendered),
+          content: DOMPurify.sanitize(item.content.rendered),
+        }));
+
+        setArticles(fetchedArticles);
+        const foundArticle = fetchedArticles.find(
+          (article: Article) => article.id === parseInt(id as string)
+        );
+        setArticle(foundArticle);
+      })
+      .catch((error: any) => {
+        console.error("Error fetching articles:", error);
+        toast("Error fetching articles:")
+      });
+  }, [id]);
+
+  if (articles.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen text-3xl font-sans font-bold gap-3">
+        Loading... <Loader2 className=" animate-spin" />
+      </div>
+    );
+  }
+
+  const handleDescriptionClick = (id: number) => {
     navigate(`/articles/${id}`);
   };
 
   return (
     <>
-      <div className="flex m-2 p-2">
-        {" "}
+      <div className="flex flex-col md:flex-row m-2 p-2">
         <Card className="m-4 p-4">
           <div className="flex flex-col items-center justify-between gap-4">
-            <h1 className="font-sans text-6xl">{article.title}</h1>
+            <h1 className="font-sans text-xl md:text-4xl lg:text-6xl">
+              {article?.title}
+            </h1>
             <img
               src={img}
               alt="Image"
               className="w-full overflow-hidden rounded-lg"
             />
-
-            <p>{article.content}</p>
+            {article && (
+              <p
+                className="text-sm md:text-base"
+                dangerouslySetInnerHTML={{ __html: article.content }}
+              ></p>
+            )}
           </div>
         </Card>
         <Card className="m-4 p-4">
@@ -57,11 +88,13 @@ export default function ArticleDetail() {
           <div className="flex flex-col gap-6">
             {articles.map((article) => (
               <Card
-                key={article.id}
-                className="flex flex-col items-center justify-between gap-1 p-2"
-                onClick={() => handleDescriptionClick(article.id)}
+                key={article?.id}
+                className="flex flex-col items-center justify-between gap-1 p-2 hover:shadow-xl hover:cursor-pointer hover:animate-in hover:-translate-y-1"
+                onClick={() => handleDescriptionClick(article?.id)}
               >
-                <h1 className="font-sans font-bold text-sm">{article.title}</h1>
+                <h1 className="font-sans font-bold text-sm">
+                  {article?.title}
+                </h1>
                 <img
                   src={img}
                   alt="Image"

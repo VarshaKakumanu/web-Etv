@@ -24,11 +24,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useDispatch } from "react-redux";
+import { loggedIn } from "@/Redux/reducers/login";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur">
@@ -237,7 +240,9 @@ export function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => {
-                    navigate("login");
+                    localStorage.clear();
+                    dispatch(loggedIn(false));
+                    navigate("/login");
                   }}
                 >
                   Log out
