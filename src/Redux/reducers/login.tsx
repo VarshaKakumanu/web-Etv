@@ -10,8 +10,11 @@ export const loggedIn = (isLoggedIn:any) => {
 // Reducer function to handle login actions
 const loginReducer = (state: false, action: { type: string; data: any }) => {
   switch (action.type) {
+ 
     case UserLoggedIn:
+      console.log(action?.data,"UserLoggedIn")
       return action.data;
+
     default:
       return false;
   }

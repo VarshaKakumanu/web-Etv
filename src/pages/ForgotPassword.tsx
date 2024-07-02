@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { DividerHorizontalIcon } from "@radix-ui/react-icons";
+import axios from "axios";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 // Define the schema for form validation
 const formSchema = z.object({
@@ -22,6 +25,7 @@ const formSchema = z.object({
 });
 
 const ForgotPassword = () => {
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,29 +33,31 @@ const ForgotPassword = () => {
     },
   });
   const navigate = useNavigate();
-  
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
 
-    // Dummy API call
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    setLoading(true);
+
+    // API call using axios
+    axios.post("https://kb.etvbharat.com/keycloak/wp-json/users/v1/reset-password", data, {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
     })
-      .then(response => response.json())
-      .then(json => {
-        alert("Success:");
+      .then((response: any) => {
+        toast("Success", {
+          description: response?.data?.message
+        });
         navigate("/login");
       })
-      .catch(error => {
-        console.error("Error:", error);
-        alert("error")
+      .catch((error:any) => {
+        toast("Error:", {
+          description: error?.response?.data?.message
+        });
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
-
   return (
     <div className="bg-background text-foreground flex-grow flex items-center justify-evenly">
       <div className="space-y-4 p-4">
@@ -80,7 +86,18 @@ const ForgotPassword = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+             {loading ? (
+              <Button className="w-full" disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <>
+                {" "}
+                <Button type="submit" className="w-full">Submit</Button>
+              </>
+            )}
+
           </form>
         </Form>
       </div>

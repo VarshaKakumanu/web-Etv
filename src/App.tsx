@@ -1,11 +1,17 @@
-import { RouterProvider } from "react-router-dom";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import { router } from "./Router";
+import React from 'react';
+import { RouterProvider } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { router } from './Router';
 
-export default function App() {
-    return (
-        <ThemeProvider>
-            <RouterProvider router={router} />
-        </ThemeProvider>
-    )
-}
+const App: React.FC = () => {
+
+
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
+};
+
+export default App;
+
