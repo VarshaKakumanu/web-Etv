@@ -3,3 +3,4 @@
 
 export const UserLoggedIn = 'UserLoggedIn';
 export const articels = 'articels';
+export const UserDetailsUpdated = 'UserDetailsUpdated';

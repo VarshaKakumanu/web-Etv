@@ -20,6 +20,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { AlignTopIcon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
+import { updateUserDetails } from "@/Redux/reducers/userDetails";
 
 // Define the schema for form validation
 const formSchema = z.object({
@@ -51,6 +52,11 @@ const Login = () => {
       email: data.username,
       password: data.password,
     });
+
+    const paramsCheck = new URLSearchParams({
+      username: data.username,
+      password: data.password,
+    });
   
     axios.post(
       `https://kb.etvbharat.com/keycloak/wp-json/users/v1/checklogin`,
@@ -64,9 +70,26 @@ const Login = () => {
     .then((response) => {
       const result = response.data;
       localStorage.setItem("access_token", result.access_token);
-      dispatch(loggedIn(true));
       if (result.access_token) {
-        navigate("/");
+        axios.get(
+          `https://kb.etvbharat.com/keycloak/wp-json/users/v1/checkUser?${paramsCheck}`,  
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        )
+        .then((response) => {
+          const result = response?.data;
+          dispatch(updateUserDetails(result));
+          dispatch(loggedIn(true));
+          console.log(result,"checkuserResponse");
+          navigate("/");
+        })
+        .catch((error:any) => {
+          toast("Failed to login", {
+            description: error?.response?.data?.RespStmsg})
+        })
       }else{
         localStorage.removeItem("access_token");
         toast("Failed to login", {
