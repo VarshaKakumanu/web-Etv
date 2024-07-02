@@ -51,7 +51,7 @@ export default function Dashboard() {
   }, []);
 
   if (articles.length === 0) {
-    return <div className='flex justify-center items-center h-screen text-3xl font-sans font-bold gap-3'>Loading... <Loader2 className=" animate-spin" /></div>;
+    return <div className='flex justify-center items-center h-screen text-4xl font-sans font-semibold gap-3'>Loading... <Loader2 className=" animate-spin" /></div>;
   }
 
   const handleDescriptionClick = (id: number) => {
@@ -75,11 +75,11 @@ export default function Dashboard() {
           <Card key={article.id} onClick={() => handleDescriptionClick(article.id)} className='hover:shadow-xl hover:cursor-pointer hover:animate-in hover:-translate-y-1'>
             <CardHeader>
               <CardTitle>{article.title}</CardTitle>
-              <img
-                src={img}
+              {/* <img
+                src=""
                 alt="Image"
                 className="block dark:hidden w-96 rounded-lg"
-              />
+              /> */}
               <CardDescription
                 className="cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap"
                 dangerouslySetInnerHTML={{ __html: article.description }}
