@@ -242,7 +242,7 @@ export function Header() {
                   onClick={() => {
                     localStorage.clear();
                     dispatch(loggedIn(false));
-                    navigate("/login");
+                    navigate('/login');
                   }}
                 >
                   Log out

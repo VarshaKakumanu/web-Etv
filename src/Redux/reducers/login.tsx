@@ -12,6 +12,7 @@ const loginReducer = (state: false, action: { type: string; data: any }) => {
   switch (action.type) {
     case UserLoggedIn:
       return action.data;
+
     default:
       return false;
   }

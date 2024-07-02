@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 // Define the schema for form validation
 const formSchema = z.object({
@@ -62,8 +63,10 @@ const SignUp = () => {
           },
         }
       );
-
-      console.log("Success:", response.data);
+      console.log(response?.data,"response");
+      toast("Success", {
+        description: response?.data?.message
+      });
       navigate("/login");
     } catch (error) {
       setError((error as Error).message);

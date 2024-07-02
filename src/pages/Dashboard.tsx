@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 // import { loggedIn } from "@/Redux/reducers/login";
 
 // Define the data type for articles
@@ -32,6 +33,7 @@ export default function Dashboard() {
   useEffect(() => {
     axios.get("https://kb.etvbharat.com/keycloak/wp-json/wp/v2/posts?status=publish")
       .then((response) => {
+        console.log(response?.data,"responseArticles");
         const formattedData = response.data.map((item: any) => ({
           id: item.id,
           title: item.title.rendered,
@@ -39,9 +41,12 @@ export default function Dashboard() {
           content: DOMPurify.sanitize(item.content.rendered),
         }));
         setArticles(formattedData);
+        
       })
+      
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        toast("Error fetching articles:", {
+          description: error})
       });
   }, []);
 
@@ -59,7 +64,6 @@ export default function Dashboard() {
     nummber: 173,
   };
 
-  console.log(articles, "articles");
   return (
     <>
       <PageHeader>

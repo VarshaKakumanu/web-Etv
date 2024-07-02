@@ -22,7 +22,6 @@ export default function ArticleDetail() {
   const [article, setArticle] = useState<Article | null>(null);
   const navigate = useNavigate();
 
-  console.log(articles, "fetching articles q");
   useEffect(() => {
     axios
       .get(
@@ -43,8 +42,8 @@ export default function ArticleDetail() {
         setArticle(foundArticle);
       })
       .catch((error: any) => {
-        console.error("Error fetching articles:", error);
-        toast("Error fetching articles:")
+        toast("Error fetching articles:", {
+          description: error})
       });
   }, [id]);
 
