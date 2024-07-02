@@ -83,10 +83,19 @@ const Login = () => {
             )
             .then((response) => {
               const result = response?.data;
-              dispatch(updateUserDetails(result));
-              dispatch(loggedIn(true));
-              console.log(result, "checkuserResponse");
-              navigate("/");
+              if(result){
+                dispatch(updateUserDetails(result));
+                dispatch(loggedIn(true));
+                console.log(result, "checkuserResponse");
+                navigate("/");
+              }
+              else{
+                toast("Failed to login", {
+                  description: "Invalid username or password",
+                });
+                dispatch(loggedIn(false));
+              }
+             
             })
             .catch((error: any) => {
               toast("Failed to login", {
@@ -128,7 +137,7 @@ const Login = () => {
             description: "Invalid username or password",
           });
           dispatch(loggedIn(false));
-          window.location.reload();
+          // window.location.reload();
         }
       })
       .catch((error: any) => {

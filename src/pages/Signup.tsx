@@ -52,9 +52,9 @@ const SignUp = () => {
         "https://kb.etvbharat.com/keycloak/wp-json/users/v1/createUser",
         {
           username: data.username,
-          display_name: data.firstName,
-          lastName: data.lastName,
-          user_email: data.email,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          site_email: data.email,
           password: data.password,
         },
         {
@@ -65,7 +65,7 @@ const SignUp = () => {
       );
       console.log(response?.data,"response");
       toast("Success", {
-        description: response?.data?.message
+        description: "User created successfully"
       });
       navigate("/login");
     } catch (error) {
