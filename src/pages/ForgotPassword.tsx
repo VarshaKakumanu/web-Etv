@@ -59,13 +59,19 @@ const ForgotPassword = () => {
       });
   };
   return (
-    <div className="bg-background text-foreground flex-grow flex items-center justify-evenly">
-      <div className="space-y-4 p-4">
+    <div className="bg-background text-foreground flex-grow flex items-center justify-evenly h-screen">
+      <div className="space-y-4 hidden md:flex flex-col p-4">
         <h2 className="text-8xl mb-4">Etv Bharat</h2>
         <h1 className="text-xl font-semibold w-96 px-2">Reset Your password and access the Login</h1>
       </div>
       <div className="space-y-4 p-4 w-80 divide-y divide-slate-300 ">
-        <h2 className="text-3xl text-center font-semibold ">Forgot Password</h2>
+      <h2 className="text-xl md:text-3xl text-center font-semibold gap-3">
+          {" "}
+          <div className="flex justify-center items-center text-2xl md:hidden">
+            Etv Bharat
+          </div>{" "}
+          <div className="flex md:justify-center">Forgot Password</div>
+        </h2>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
