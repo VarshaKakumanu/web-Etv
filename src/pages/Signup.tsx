@@ -52,9 +52,9 @@ const SignUp = () => {
         "https://kb.etvbharat.com/keycloak/wp-json/users/v1/createUser",
         {
           username: data.username,
-          display_name: data.firstName,
-          lastName: data.lastName,
-          user_email: data.email,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          site_email: data.email,
           password: data.password,
         },
         {
@@ -65,7 +65,7 @@ const SignUp = () => {
       );
       console.log(response?.data,"response");
       toast("Success", {
-        description: response?.data?.message
+        description: "User created successfully"
       });
       navigate("/login");
     } catch (error) {
@@ -76,13 +76,19 @@ const SignUp = () => {
   };
 
   return (
-    <div className="bg-background text-foreground flex-grow flex items-center justify-evenly">
-      <div className="space-y-4 p-4">
+    <div className="bg-background text-foreground flex-grow flex items-center justify-evenly h-screen">
+      <div className="space-y-4 hidden md:flex flex-col p-4">
         <h2 className="text-8xl mb-4">Etv Bharat</h2>
         <h1 className="text-xl font-semibold w-96 px-2">Sign Up to Etv Bharat and login to access our exclusive articles, tailored to your interests.</h1>
       </div>
       <div className="space-y-4 p-4 w-80 divide-y divide-slate-300">
-        <h2 className="text-3xl text-center font-semibold">Sign Up</h2>
+      <h2 className="text-xl md:text-3xl text-center font-semibold gap-3">
+          {" "}
+          <div className="flex justify-center items-center text-2xl md:hidden">
+            Etv Bharat
+          </div>{" "}
+          <div className="flex md:justify-center">Sign Up</div>
+        </h2>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">

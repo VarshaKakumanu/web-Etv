@@ -21,6 +21,7 @@ export default function ArticleDetail() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [article, setArticle] = useState<Article | null>(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -40,17 +41,20 @@ export default function ArticleDetail() {
           (article: Article) => article.id === parseInt(id as string)
         );
         setArticle(foundArticle);
+        setLoading(false); // Set loading to false after fetching articles
       })
       .catch((error: any) => {
-        toast("Error fetching articles:", {
-          description: error})
+        toast.error("Error fetching articles:", {
+          description: error.message,
+        });
+        setLoading(false); // Set loading to false even if there's an error
       });
   }, [id]);
 
-  if (articles.length === 0) {
+  if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen text-3xl font-sans font-bold gap-3">
-        Loading... <Loader2 className=" animate-spin" />
+      <div className="flex justify-center items-center h-screen text-4xl font-sans font-semibold gap-3">
+        Loading... <Loader2 className="animate-spin" />
       </div>
     );
   }
@@ -60,18 +64,13 @@ export default function ArticleDetail() {
   };
 
   return (
-    <>
-      <div className="flex flex-col md:flex-row m-2 p-2">
+    <div className="flex flex-col md:flex-row m-2 p-2">
+      {article ? (
         <Card className="m-4 p-4">
           <div className="flex flex-col items-center justify-between gap-4">
             <h1 className="font-sans text-xl md:text-4xl lg:text-6xl">
-              {article?.title}
+              {article.title}
             </h1>
-            <img
-              src={img}
-              alt="Image"
-              className="w-full overflow-hidden rounded-lg"
-            />
             {article && (
               <p
                 className="text-sm md:text-base"
@@ -80,31 +79,30 @@ export default function ArticleDetail() {
             )}
           </div>
         </Card>
-        <Card className="m-4 p-4">
-          <div className="flex text-lg font-bold m-2 items-center justify-center">
-            Related Articles
-          </div>
-          <div className="flex flex-col gap-6">
-            {articles.map((article) => (
-              <Card
-                key={article?.id}
-                className="flex flex-col items-center justify-between gap-1 p-2 hover:shadow-xl hover:cursor-pointer hover:animate-in hover:-translate-y-1"
-                onClick={() => handleDescriptionClick(article?.id)}
-              >
-                <h1 className="font-sans font-bold text-sm">
-                  {article?.title}
-                </h1>
-                <img
-                  src={img}
-                  alt="Image"
-                  className="w-full overflow-hidden rounded-lg"
-                />
-                <p>tap for more info</p>
-              </Card>
-            ))}
-          </div>
-        </Card>
-      </div>
-    </>
+      ) : (
+        <div>No article found</div>
+      )}
+
+      <Card className="m-4 p-4">
+        <div className="flex text-lg font-bold m-2 items-center justify-center">
+          Related Articles
+        </div>
+        <div className="flex flex-col gap-6">
+          {articles.map((article) => (
+            <Card
+              key={article.id}
+              className="flex flex-col items-center justify-between gap-1 p-2 hover:shadow-xl hover:cursor-pointer hover:animate-in hover:-translate-y-1"
+              onClick={() => {
+                setLoading(true);
+                handleDescriptionClick(article.id);
+              }}
+            >
+              <h1 className="font-sans font-bold text-sm">{article.title}</h1>
+              <p>tap for more info</p>
+            </Card>
+          ))}
+        </div>
+      </Card>
+    </div>
   );
 }

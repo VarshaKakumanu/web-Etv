@@ -1,11 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./reducers/index";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import rootReducer from "./reducers";
 
-// Create the Redux store using the rootReducer
-const store = configureStore({ 
-  reducer: rootReducer, // Root reducer combines all slice reducers
+const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
 });
 
-console.warn(store, "store"); // Log the store for debugging purposes
+const persistor = persistStore(store);
 
-export default store; // Export the store to be used in the application
+export { store, persistor };

@@ -47,7 +47,7 @@ const Login = () => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
     setError(null);
-  
+
     const params = new URLSearchParams({
       email: data.username,
       password: data.password,
@@ -57,68 +57,118 @@ const Login = () => {
       username: data.username,
       password: data.password,
     });
-  
-    axios.post(
-      `https://kb.etvbharat.com/keycloak/wp-json/users/v1/checklogin`,
-      params,
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    )
-    .then((response) => {
-      const result = response.data;
-      localStorage.setItem("access_token", result.access_token);
-      if (result.access_token) {
-        axios.get(
-          `https://kb.etvbharat.com/keycloak/wp-json/users/v1/checkUser?${paramsCheck}`,  
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-          }
-        )
-        .then((response) => {
-          const result = response?.data;
-          dispatch(updateUserDetails(result));
-          dispatch(loggedIn(true));
-          console.log(result,"checkuserResponse");
-          navigate("/");
-        })
-        .catch((error:any) => {
+
+    axios
+      .post(
+        `https://kb.etvbharat.com/keycloak/wp-json/users/v1/checklogin`,
+        params,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      )
+      .then((response) => {
+        const result = response.data;
+        localStorage.setItem("access_token", result.access_token);
+        if (result.access_token) {
+          axios
+            .get(
+              `https://kb.etvbharat.com/keycloak/wp-json/users/v1/checkUser?${paramsCheck}`,
+              {
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+              }
+            )
+            .then((response) => {
+              const result = response?.data;
+              if(result){
+                dispatch(updateUserDetails(result));
+                dispatch(loggedIn(true));
+                console.log(result, "checkuserResponse");
+                navigate("/");
+              }
+              else{
+                toast("Failed to login", {
+                  description: "Invalid username or password",
+                });
+                dispatch(loggedIn(false));
+              }
+             
+            })
+            .catch((error: any) => {
+              toast("Failed to login", {
+                description: error?.response?.data?.RespStmsg,
+              });
+            });
+        } else {
+          axios
+            .post(
+              `https://kb.etvbharat.com/keycloak/wp-json/wp/v2/users/me?`,
+              params,
+              {
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+              }
+            )
+            .then((response) => {
+              const result = response?.data;
+              if (result === null) {
+                axios.get(
+                  `https://kb.etvbharat.com/keycloak/wp-json/users/v1/checkUser?${paramsCheck}`,
+                  {
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                  }
+                );
+              }
+              console.log(result, "checkuserResponse");
+            })
+            .catch((error: any) => {
+              toast("Failed to login", {
+                description: error?.response?.data?.RespStmsg,
+              });
+            });
+          localStorage.removeItem("access_token");
           toast("Failed to login", {
-            description: error?.response?.data?.RespStmsg})
-        })
-      }else{
-        localStorage.removeItem("access_token");
+            description: "Invalid username or password",
+          });
+          dispatch(loggedIn(false));
+          // window.location.reload();
+        }
+      })
+      .catch((error: any) => {
         toast("Failed to login", {
-          description: "Invalid username or password"})
+          description: error?.response.data.RespStmsg,
+        });
         dispatch(loggedIn(false));
-        window.location.reload();
-      }
-    })
-    .catch((error:any) => {
-      toast("Failed to login", {
-        description: error?.response.data.RespStmsg})
-      dispatch(loggedIn(false));
-    })
-    .finally(() => {
-      setLoading(false);
-    });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
-    <div className="bg-background text-foreground flex-grow flex items-center justify-evenly">
-      <div className="space-y-4 p-4">
+    <div className="bg-background text-foreground flex-grow flex items-center justify-evenly h-screen">
+      <div className="space-y-4 hidden md:flex flex-col p-4">
         <h2 className="text-8xl mb-4">Etv Bharat</h2>
         <h1 className="text-xl font-semibold w-96 px-2">
           Login to access and enjoy our exclusive articles, tailored to your
           interests.
         </h1>
       </div>
+
       <div className="space-y-4 p-4 w-80 divide-y divide-slate-300">
-        <h2 className="text-3xl text-center font-semibold ">Login</h2>
+        <h2 className="text-xl md:text-3xl text-center font-semibold gap-3">
+          {" "}
+          <div className="flex justify-center items-center text-2xl md:hidden">
+            Etv Bharat
+          </div>{" "}
+          <div className="flex md:justify-center">Login</div>
+        </h2>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -161,7 +211,9 @@ const Login = () => {
             ) : (
               <>
                 {" "}
-                <Button type="submit" className="w-full">Submit</Button>
+                <Button type="submit" className="w-full">
+                  Submit
+                </Button>
               </>
             )}
 

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import { Applayout } from "./components/layouts/AppLayout";
 
@@ -10,11 +10,12 @@ import ArticleDetail from "./pages/ArticleDetails";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import SignUp from "./pages/Signup";
+export const token = localStorage.getItem("access_token");
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Applayout />,
+        element: token? <Applayout /> : <Navigate to="/login" />,
         children: [
             {
                 path: "",
