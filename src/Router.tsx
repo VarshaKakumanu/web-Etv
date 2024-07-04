@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import SignUp from "./pages/Signup";
 export const token = localStorage.getItem("access_token");
+const basename = "/";
 
 export const router = createBrowserRouter([
     {
@@ -54,5 +55,5 @@ export const router = createBrowserRouter([
         element: <SignUp />,
     },
 ], {
-    basename: global.basename
+    basename: basename
 })
