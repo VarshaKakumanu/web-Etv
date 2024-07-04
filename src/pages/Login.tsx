@@ -87,7 +87,7 @@ const Login = () => {
               if(result?.username){
                 dispatch(updateUserDetails(result));
                 dispatch(loggedIn(true));
-                navigate("/");
+                window.location.href = "/";
               }
               else{
                 toast("Failed to login", {

@@ -15,12 +15,9 @@ export default defineConfig(({ command }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
-    define: {
-      global: {
-        basename: isProd ? basenameProd : '',
-      },
-    },
     build: {
+      outDir: 'dist', // Ensure output directory is set
+      assetsDir: 'assets', // Ensure assets directory is set
       rollupOptions: {
         output: {
           manualChunks: {
