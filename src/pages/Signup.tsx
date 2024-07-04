@@ -51,11 +51,11 @@ const SignUp = () => {
       const response = await axios.post(
         "https://kb.etvbharat.com/keycloak/wp-json/users/v1/createUser",
         {
-          username: data.username,
-          first_name: data.firstName,
-          last_name: data.lastName,
-          site_email: data.email,
-          password: data.password,
+          username: data?.username,
+          first_name: data?.firstName,
+          last_name: data?.lastName,
+          site_email: data?.email,
+          password: data?.password,
         },
         {
           headers: {
@@ -69,7 +69,7 @@ const SignUp = () => {
       });
       navigate("/login");
     } catch (error) {
-      setError((error as Error).message);
+      setError((error as Error)?.message);
     } finally {
       setLoading(false);
     }

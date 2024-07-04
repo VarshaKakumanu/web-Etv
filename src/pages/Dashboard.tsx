@@ -34,11 +34,11 @@ export default function Dashboard() {
     axios.get("https://kb.etvbharat.com/keycloak/wp-json/wp/v2/posts?status=publish")
       .then((response) => {
         console.log(response?.data,"responseArticles");
-        const formattedData = response.data.map((item: any) => ({
-          id: item.id,
-          title: item.title.rendered,
-          description:  DOMPurify.sanitize(item.content.rendered),
-          content: DOMPurify.sanitize(item.content.rendered),
+        const formattedData = response?.data?.map((item: any) => ({
+          id: item?.id,
+          title: item?.title?.rendered,
+          description:  DOMPurify.sanitize(item?.content?.rendered),
+          content: DOMPurify.sanitize(item?.content?.rendered),
         }));
         setArticles(formattedData);
         
@@ -50,11 +50,11 @@ export default function Dashboard() {
       });
   }, []);
 
-  if (articles.length === 0) {
+  if (articles?.length === 0) {
     return <div className='flex justify-center items-center h-screen text-4xl font-sans font-semibold gap-3'>Loading... <Loader2 className=" animate-spin" /></div>;
   }
 
-  const handleDescriptionClick = (id: number) => {
+const handleDescriptionClick = (id: number) => {
     navigate(`/articles/${id}`);
   };
 
@@ -71,10 +71,10 @@ export default function Dashboard() {
       </PageHeader>
       {/* <Button variant="secondary" onClick={()=>{dispatch(loggedIn(product))}}>add to reducer</Button> */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {articles.map((article) => (
-          <Card key={article.id} onClick={() => handleDescriptionClick(article.id)} className='hover:shadow-xl hover:cursor-pointer hover:animate-in hover:-translate-y-1'>
+        {articles.map((article:any) => (
+          <Card key={article?.id} onClick={() => handleDescriptionClick(article?.id)} className='hover:shadow-xl hover:cursor-pointer hover:animate-in hover:-translate-y-1'>
             <CardHeader>
-              <CardTitle>{article.title}</CardTitle>
+              <CardTitle>{article?.title}</CardTitle>
               {/* <img
                 src=""
                 alt="Image"
@@ -82,7 +82,7 @@ export default function Dashboard() {
               /> */}
               <CardDescription
                 className="cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap"
-                dangerouslySetInnerHTML={{ __html: article.description }}
+                dangerouslySetInnerHTML={{ __html: article?.description }}
               />
             </CardHeader>
           </Card>

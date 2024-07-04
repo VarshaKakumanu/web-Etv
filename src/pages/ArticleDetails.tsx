@@ -28,12 +28,12 @@ export default function ArticleDetail() {
       .get(
         "https://kb.etvbharat.com/keycloak/wp-json/wp/v2/posts?status=publish"
       )
-      .then((response) => {
-        const fetchedArticles = response.data.map((item: any) => ({
-          id: item.id,
-          title: item.title.rendered,
-          description: DOMPurify.sanitize(item.content.rendered),
-          content: DOMPurify.sanitize(item.content.rendered),
+      .then((response:any) => {
+        const fetchedArticles = response?.data?.map((item: any) => ({
+          id: item?.id,
+          title: item?.title?.rendered,
+          description: DOMPurify.sanitize(item?.content?.rendered),
+          content: DOMPurify.sanitize(item?.content?.rendered),
         }));
 
         setArticles(fetchedArticles);
@@ -45,7 +45,7 @@ export default function ArticleDetail() {
       })
       .catch((error: any) => {
         toast.error("Error fetching articles:", {
-          description: error.message,
+          description: error?.message,
         });
         setLoading(false); // Set loading to false even if there's an error
       });
@@ -86,16 +86,16 @@ export default function ArticleDetail() {
           Related Articles
         </div>
         <div className="flex flex-col gap-6 ">
-          {articles.map((article) => (
+          {articles.map((article:any) => (
             <Card
-              key={article.id}
+              key={article?.id}
               className="flex flex-col items-center justify-between gap-1 p-2 hover:shadow-xl hover:cursor-pointer hover:animate-in hover:-translate-y-1"
               onClick={() => {
                 setLoading(true);
-                handleDescriptionClick(article.id);
+                handleDescriptionClick(article?.id);
               }}
             >
-              <h1 className="font-sans font-bold text-sm">{article.title}</h1>
+              <h1 className="font-sans font-bold text-sm">{article?.title}</h1>
               <p>tap for more info</p>
             </Card>
           ))}

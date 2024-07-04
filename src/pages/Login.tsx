@@ -49,13 +49,13 @@ const Login = () => {
     setError(null);
 
     const params = new URLSearchParams({
-      email: data.username,
-      password: data.password,
+      email: data?.username,
+      password: data?.password,
     });
 
     const paramsCheck = new URLSearchParams({
-      username: data.username,
-      password: data.password,
+      username: data?.username,
+      password: data?.password,
     });
 
     axios
@@ -69,8 +69,8 @@ const Login = () => {
         }
       )
       .then((response) => {
-        const result = response.data;
-        localStorage.setItem("access_token", result.access_token);
+        const result = response?.data;
+        localStorage.setItem("access_token", result?.access_token);
         if (result?.access_token) {
           axios
             .get(
@@ -81,14 +81,13 @@ const Login = () => {
                 },
               }
             )
-            .then((response) => {
+            .then((response:any) => {
               const result = response?.data;
-              console.log(result, "checkuserResponse");
+              console?.log(result, "checkuserResponse");
               if(result?.username){
                 dispatch(updateUserDetails(result));
                 dispatch(loggedIn(true));
-                // navigate("/");
-                window.location.href = "/"
+                navigate("/");
               }
               else{
                 toast("Failed to login", {
@@ -117,7 +116,7 @@ const Login = () => {
                 },
               }
             )
-            .then((response) => {
+            .then((response:any) => {
               const result = response?.data;
               if (result === null) {
                 axios.get(
@@ -145,7 +144,7 @@ const Login = () => {
       })
       .catch((error: any) => {
         toast("Failed to login", {
-          description: error?.response.data.RespStmsg,
+          description: error?.response?.data?.RespStmsg,
         });
         dispatch(loggedIn(false));
       })
