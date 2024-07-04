@@ -71,7 +71,7 @@ const Login = () => {
       .then((response) => {
         const result = response.data;
         localStorage.setItem("access_token", result.access_token);
-        if (result.access_token) {
+        if (result?.access_token) {
           axios
             .get(
               `https://kb.etvbharat.com/keycloak/wp-json/users/v1/checkUser?${paramsCheck}`,
@@ -83,11 +83,12 @@ const Login = () => {
             )
             .then((response) => {
               const result = response?.data;
-              if(result){
+              console.log(result, "checkuserResponse");
+              if(result?.username){
                 dispatch(updateUserDetails(result));
                 dispatch(loggedIn(true));
-                console.log(result, "checkuserResponse");
-                navigate("/");
+                // navigate("/");
+                window.location.href = "/"
               }
               else{
                 toast("Failed to login", {
@@ -101,6 +102,9 @@ const Login = () => {
               toast("Failed to login", {
                 description: error?.response?.data?.RespStmsg,
               });
+            })
+            .finally(() => {
+              setLoading(false);
             });
         } else {
           axios
@@ -125,7 +129,6 @@ const Login = () => {
                   }
                 );
               }
-              console.log(result, "checkuserResponse");
             })
             .catch((error: any) => {
               toast("Failed to login", {
