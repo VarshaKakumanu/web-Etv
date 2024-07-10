@@ -167,7 +167,7 @@ const Login = () => {
         <h2 className="text-xl md:text-3xl text-center font-semibold gap-3">
           {" "}
           <div className="flex justify-center items-center text-2xl md:hidden">
-            Etv Bharat
+           hey welcome!!
           </div>{" "}
           <div className="flex md:justify-center">Login</div>
         </h2>
