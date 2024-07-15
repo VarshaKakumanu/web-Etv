@@ -16,15 +16,15 @@ export default defineConfig(({ command }) => {
       },
     },
     build: {
-      outDir: 'dist', // Ensure output directory is set
-      assetsDir: 'assets', // Ensure assets directory is set
       rollupOptions: {
-        output: {
-          manualChunks: {
-            vendor: ['react', 'react-dom'],
-          },
-        },
-      },
-    },
+          output:{
+              manualChunks(id) {
+                  if (id.includes('node_modules')) {
+                      return id.toString().split('node_modules/')[1].split('/')[0].toString();
+                  }
+              }
+          }
+      }
+  }
   }
 })
